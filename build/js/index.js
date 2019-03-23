@@ -4,9 +4,13 @@ var btnBrush = document.getElementById("btnBrush");
 var btnBlur = document.getElementById("btnBlur");
 var btnAddLayer = document.getElementById("btnLayerAdd");
 var divLayers = document.getElementById("layers");
+var canvasAll = document.getElementById('paint');
+var btnColor = document.getElementById('btnColor');
+var size = document.getElementById('size');
 var btnDel;
 var radios;
 var countLayer = 0;
+var currentActiveLayer = 0;
 var nameLayer = [{
   key: 0,
   value: "Background layer"
@@ -20,13 +24,43 @@ var nameLayer = [{
   key: 3,
   value: "Third layer"
 }];
+var myCanvas = new LayeredCanvas("paint");
+var mouse = {
+  x: 0,
+  y: 0
+};
+var mouseStart = {
+  x: 0,
+  y: 0
+};
+var draw = false;
+
+function drawMove(e) {
+  if (draw === true) {
+    drawOnCurrentLayer(e);
+  }
+}
+
+function drawFalse() {
+  draw = false;
+}
+
+function drawTrue(e) {
+  draw = true;
+  mouseStart.x = e.pageX - canvasAll.offsetLeft;
+  mouseStart.y = e.pageY - canvasAll.offsetTop;
+}
+
+myCanvas.canvas.addEventListener("mousedown", drawTrue);
+myCanvas.canvas.addEventListener("mousemove", drawMove);
+myCanvas.canvas.addEventListener("mouseup", drawFalse);
 btnBrush.addEventListener("click", changeActiveBrush);
 btnBlur.addEventListener("click", changeActiveBlur);
 btnAddLayer.addEventListener("click", addLayer);
 
 function getCurrentLayer(event) {
-  console.log(event.target);
-  myCanvas.getLayer(+event.target.id);
+  currentActiveLayer = +event.target.id;
+  myCanvas.getLayer(currentActiveLayer);
 }
 
 function changeActiveBrush() {
@@ -125,25 +159,27 @@ function LayeredCanvas(id) {
 function addLayer() {
   addCurrentLayerButton(countLayer, nameLayer);
   radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
-  btnDel = document.querySelectorAll('.current-button-delete-layer');
+  btnDel = document.querySelectorAll(".current-button-delete-layer");
   myCanvas.addLayer({
     id: countLayer++,
     render: function render(canvas, ctx) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (countLayer === 0) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
     }
   });
   myCanvas.render();
   radios.forEach(function (el) {
-    el.addEventListener('click', getCurrentLayer);
+    el.addEventListener("click", getCurrentLayer);
   });
   btnDel.forEach(function (el) {
-    el.addEventListener('click', deleteCurrentLayer);
+    el.addEventListener("click", deleteCurrentLayer);
   });
 }
 
 function deleteCurrentLayer(e) {
-  var curLayers = document.getElementsByClassName('layers__curLayer');
+  var curLayers = document.getElementsByClassName("layers__curLayer");
 
   for (var i = 0; i < curLayers.length; i++) {
     if (curLayers[i].dataset.flag === e.target.value) {
@@ -152,17 +188,19 @@ function deleteCurrentLayer(e) {
   }
 
   myCanvas.removeLayer(+e.target.value);
+  countLayer--;
+  myCanvas.render();
 }
 
 function addCurrentLayerButton(count, arrName) {
-  var curAddLayer = document.createElement('div');
-  var curLabel = document.createElement('label');
-  var curInputRadio = document.createElement('input');
-  var curLabelNameLayer = document.createElement('label');
-  var curButtonDelLayer = document.createElement('button');
+  var curAddLayer = document.createElement("div");
+  var curLabel = document.createElement("label");
+  var curInputRadio = document.createElement("input");
+  var curLabelNameLayer = document.createElement("label");
+  var curButtonDelLayer = document.createElement("button");
   curAddLayer.dataset.flag = count;
-  curInputRadio.type = 'radio';
-  curInputRadio.name = 'radioLayer';
+  curInputRadio.type = "radio";
+  curInputRadio.name = "radioLayer";
 
   if (count === 0) {
     curInputRadio.checked = true;
@@ -175,9 +213,9 @@ function addCurrentLayerButton(count, arrName) {
   }
 
   curLabel.innerHTML = count;
-  curAddLayer.classList.add('layers__curLayer');
-  curButtonDelLayer.classList.add('current-button-delete-layer');
-  curButtonDelLayer.innerHTML = 'Del';
+  curAddLayer.classList.add("layers__curLayer");
+  curButtonDelLayer.classList.add("current-button-delete-layer");
+  curButtonDelLayer.innerHTML = "Del";
   curButtonDelLayer.value = count;
   curAddLayer.appendChild(curLabel);
   curAddLayer.appendChild(curInputRadio);
@@ -186,73 +224,76 @@ function addCurrentLayerButton(count, arrName) {
   divLayers.appendChild(curAddLayer);
 }
 
-var myCanvas = new LayeredCanvas("paint"); // myCanvas
-//   .addLayer({
-//     id: "background",
-//     render: function(canvas, ctx) {
-//       ctx.fillStyle = "black";
-//       ctx.fillRect(0, 0, canvas.width, canvas.height);
-//     }
-//   })
-//   .addLayer({
-//     id: "squares",
-//     render: function(canvas, ctx) {
-//       ctx.fillStyle = "#E5E059";
-//       ctx.fillRect(50, 50, 150, 150);
-//
-//       ctx.fillStyle = "#BDD358";
-//       ctx.fillRect(350, 75, 150, 150);
-//
-//       ctx.fillStyle = "#E5625E";
-//       ctx.fillRect(50, 250, 100, 250);
-//     }
-//   })
-//   .addLayer({
-//     id: "circles",
-//     render: function(canvas, ctx) {
-//       ctx.fillStyle = "#558B6E";
-//       ctx.beginPath();
-//       ctx.arc(75, 75, 80, 0, 2 * Math.PI);
-//       ctx.fill();
-//
-//       ctx.beginPath();
-//       ctx.fillStyle = "#88A09E";
-//       ctx.arc(275, 275, 150, 0, 2 * Math.PI);
-//       ctx.fill();
-//
-//       ctx.beginPath();
-//       ctx.fillStyle = "#704C5E";
-//       ctx.arc(450, 450, 50, 0, 2 * Math.PI);
-//       ctx.fill();
-//     }
-//   })
-//   .addLayer({
-//     id: "triangles",
-//     render: function(canvas, ctx) {
-//       ctx.fillStyle = "#DAF7A6";
-//       ctx.beginPath();
-//       ctx.moveTo(120, 400);
-//       ctx.lineTo(250, 300);
-//       ctx.lineTo(300, 500);
-//       ctx.closePath();
-//       ctx.fill();
-//
-//       ctx.fillStyle = "#FFC300";
-//       ctx.beginPath();
-//       ctx.moveTo(400, 100);
-//       ctx.lineTo(350, 300);
-//       ctx.lineTo(230, 200);
-//       ctx.closePath();
-//       ctx.fill();
-//
-//       ctx.fillStyle = "#C70039";
-//       ctx.beginPath();
-//       ctx.moveTo(100, 100);
-//       ctx.lineTo(100, 300);
-//       ctx.lineTo(300, 300);
-//       ctx.closePath();
-//       ctx.fill();
-//     }
-//   });
-//
-// myCanvas.render();
+function drawOnCurrentLayer(e) {
+  var currentLayer = myCanvas.getLayer(currentActiveLayer);
+  mouse.x = e.pageX - canvasAll.offsetLeft;
+  mouse.y = e.pageY - canvasAll.offsetTop;
+
+  currentLayer.render = function (canvas, ctx) {
+    ctx.beginPath();
+    ctx.moveTo(mouse.x, mouse.y);
+    ctx.strokeStyle = btnColor.value;
+    ctx.lineWidth = size.value;
+    ctx.lineTo(mouse.x, mouse.y);
+    ctx.closePath();
+    ctx.stroke();
+  };
+
+  myCanvas.render();
+  console.log(currentLayer);
+}
+
+myCanvas.addLayer({
+  id: "0",
+  render: function render(canvas, ctx) {}
+}).addLayer({
+  id: "1",
+  render: function render(canvas, ctx) {
+    ctx.fillStyle = "#BDD358";
+    ctx.fillRect(350, 75, 150, 150);
+    ctx.fillStyle = "#E5625E";
+    ctx.fillRect(50, 250, 100, 250);
+  }
+}).addLayer({
+  id: "2",
+  render: function render(canvas, ctx) {
+    ctx.fillStyle = "#558B6E";
+    ctx.beginPath();
+    ctx.arc(75, 75, 80, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#88A09E";
+    ctx.arc(275, 275, 150, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = "#704C5E";
+    ctx.arc(450, 450, 50, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+}).addLayer({
+  id: "3",
+  render: function render(canvas, ctx) {
+    ctx.fillStyle = "#DAF7A6";
+    ctx.beginPath();
+    ctx.moveTo(120, 400);
+    ctx.lineTo(250, 300);
+    ctx.lineTo(300, 500);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#FFC300";
+    ctx.beginPath();
+    ctx.moveTo(400, 100);
+    ctx.lineTo(350, 300);
+    ctx.lineTo(230, 200);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#C70039";
+    ctx.beginPath();
+    ctx.moveTo(100, 100);
+    ctx.lineTo(100, 300);
+    ctx.lineTo(300, 300);
+    ctx.closePath();
+    ctx.fill();
+  }
+});
+myCanvas.render();
