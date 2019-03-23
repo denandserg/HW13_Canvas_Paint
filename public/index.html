@@ -1,35 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Paint on Canvas</title>
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-<h2 class="title">Paint on Canvas</h2>
-<div class="button-wrapper">
-    <div class="dropdown">
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <h2 class="title">Paint on Canvas</h2>
+    <div class="button-wrapper">
+      <div class="dropdown">
         <button class="button-wrapper__btn">Settings</button>
         <div class="dropdown-content">
-            <button id="btnLang" class="button-wrapper__btn" data-flag="rus">Language</button>
-            <button id="btnTheme" class="button-wrapper__btn" data-flag="light">Theme</button>
+          <button id="btnLang" class="button-wrapper__btn" data-flag="rus">
+            Language
+          </button>
+          <button id="btnTheme" class="button-wrapper__btn" data-flag="light">
+            Theme
+          </button>
         </div>
-    </div>
-    <button id="btnBrush" class="button-wrapper__btn" data-flag="off">Brush</button>
-    <button id="btnBlur" class="button-wrapper__btn" data-flag="off">Blur</button>
-    <div class="button-wrapper__btn">
+      </div>
+      <button id="btnBrush" class="button-wrapper__btn" data-flag="off">
+        Brush
+      </button>
+      <button id="btnBlur" class="button-wrapper__btn" data-flag="off">
+        Blur
+      </button>
+      <div class="button-wrapper__btn">
         <label for="size">Size:</label>
-        <input id="size" class="" type="number" min="1" max="100" value="1" placeholder="Size"></div>
-    <input type="color" id="btnColor" class="button-wrapper__btn">
-</div>
-<div class="module-wrapper">
-    <div class="figures"></div>
-    <div class="canvas"></div>
-    <div class="layers"></div>
-</div>
-<script src="./js/index.js"></script>
-</body>
+        <input
+          id="size"
+          class=""
+          type="number"
+          min="1"
+          max="100"
+          value="1"
+          placeholder="Size"
+        />
+      </div>
+
+      <input type="color" id="btnColor" class="button-wrapper__btn" />
+    </div>
+    <div class="module-wrapper">
+      <div class="figures">
+        <h3>Figures panel</h3>
+        <button class="figures__btn"></button>
+        <button class="figures__btn"></button>
+        <button class="figures__btn"></button>
+      </div>
+      <div class="canvas">
+        <canvas id="paint" width="800" height="500"></canvas>
+      </div>
+      <div class="layers" id="layers">
+        <h3>Layout panel</h3>
+        <button id="btnLayerAdd" class="layers__btn">Add layer</button>
+      </div>
+    </div>
+    <script src="./js/index.js"></script>
+  </body>
 </html>

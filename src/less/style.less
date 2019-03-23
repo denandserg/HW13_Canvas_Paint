@@ -64,11 +64,22 @@ body {
     border: 1px solid red;
     width: 200px;
     height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    h3 {
+        margin: 5px auto;
+    }
+    &__btn {
+        margin: 10px;
+        width: 40px;
+        height: 40px;
+    }
 }
 
 .canvas {
     border: 2px solid red;
-    border-radius: 20px;
     width: 800px;
     height: 500px;
 }
@@ -77,6 +88,24 @@ body {
     border: 1px solid red;
     width: 200px;
     height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    &__btn {
+        margin: 10px;
+    }
+    h3 {
+        margin: 5px auto;
+    }
+    &__curLayer {
+        margin: 5px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        &--selected {
+            background-color: aquamarine;
+        }
+    }
 }
 
 
