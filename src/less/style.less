@@ -5,7 +5,7 @@ body {
 }
 
 .button-wrapper {
-    width: 600px;
+    width: 700px;
     border: 1px solid red;
     padding: 5px;
     display: flex;
@@ -14,7 +14,7 @@ body {
     align-items: center;
 
     &__btn {
-        width: 100px;
+        width: 120px;
         height: 30px;
         display: flex;
         justify-content: space-around;
@@ -25,35 +25,71 @@ body {
     }
 }
 
+/* The container <div> - needed to position the dropdown content */
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
-.dropdown-content {
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content, .dropdown-content-settings  {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 100px;
+    min-width: 80px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
 
-.dropdown-content button {
-    color: black;
-    text-decoration: none;
+.dropdown.active .dropdown-content-settings {
     display: block;
 }
 
-.dropdown-content button:hover {background-color: #f1f1f1}
+.dropdown-content_theme {
+    display: none;
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    background-color: #f9f9f9;
+    min-width: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
 
+.dropdown-content_lang {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 83px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    min-width: 80px;
+    z-index: 2;
+}
+
+.dropdown-content_lang.active {
+    display: block;
+}
+
+.dropdown-content_theme.active {
+    display: block;
+}
+
+/* Links inside the dropdown */
+.dropdown-content-settings span,
+.dropdown-content span {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-.dropdown:hover .dropbtn {
-    background-color: #3e8e41;
-}
 
 .module-wrapper {
     display: flex;
@@ -79,9 +115,9 @@ body {
 }
 
 .canvas {
-    border: 2px solid red;
-    width: 800px;
-    height: 500px;
+    border: 1px solid red;
+    width:800px;
+    height:500px;
 }
 
 .layers {
@@ -107,6 +143,16 @@ body {
         }
     }
 }
+
+.current-button-delete-layer {
+    background: url('../img/btnDelete.svg') no-repeat;
+    color: aqua;
+    width: 25px;
+    height: 25px;
+    outline: none;
+    border-radius: 10px;
+}
+
 
 
 

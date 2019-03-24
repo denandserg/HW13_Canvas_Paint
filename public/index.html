@@ -9,29 +9,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Paint on Canvas</title>
     <link rel="stylesheet" href="./css/styles.css" />
+    <link href="./css/light-theme.css" rel="stylesheet" id="theme">
   </head>
   <body>
-    <h2 class="title">Paint on Canvas</h2>
+    <h2 class="title" data-lang="Paint on Canvas">Paint on Canvas</h2>
     <div class="button-wrapper">
       <div class="dropdown">
-        <button class="button-wrapper__btn">Settings</button>
-        <div class="dropdown-content">
-          <button id="btnLang" class="button-wrapper__btn" data-flag="rus">
-            Language
-          </button>
-          <button id="btnTheme" class="button-wrapper__btn" data-flag="light">
-            Theme
-          </button>
+        <button class="button-wrapper__btn dropbtn dropbtn-settings" data-lang="Settings">Settings</button>
+        <div class="dropdown-content-settings">
+          <span data-id="theme" data-lang="Theme">Theme</span>
+          <div class="dropdown-content_theme">
+            <span data-id="dark" data-lang="Dark">Dark</span>
+            <span data-id="light" data-lang="Light">Light</span>
+          </div>
+          <span data-id="lang" data-lang="Lang">Lang</span>
+          <div class="dropdown-content_lang">
+            <span data-id="eng" data-lang="Eng">Eng</span>
+            <span data-id="rus" data-lang="Rus">Rus</span>
+          </div>
         </div>
       </div>
-      <button id="btnBrush" class="button-wrapper__btn" data-flag="off">
+      <button id="btnBrush" class="button-wrapper__btn" data-flag="off" data-lang="Brush">
         Brush
       </button>
-      <button id="btnBlur" class="button-wrapper__btn" data-flag="off">
+      <button id="btnBlur" class="button-wrapper__btn" data-flag="off" data-lang="Blur">
         Blur
       </button>
       <div class="button-wrapper__btn">
-        <label for="size">Size:</label>
+        <label for="size" data-lang="Size:">Size:</label>
         <input
           id="size"
           class=""
@@ -47,7 +52,7 @@
     </div>
     <div class="module-wrapper">
       <div class="figures">
-        <h3>Figures panel</h3>
+        <h3 data-lang="Figures panel">Figures panel</h3>
         <button class="figures__btn"></button>
         <button class="figures__btn"></button>
         <button class="figures__btn"></button>
@@ -56,8 +61,8 @@
         <canvas id="paint" width="800" height="500"></canvas>
       </div>
       <div class="layers" id="layers">
-        <h3>Layout panel</h3>
-        <button id="btnLayerAdd" class="layers__btn">Add layer</button>
+        <h3 data-lang="Layout panel">Layout panel</h3>
+        <button data-lang="Add layer" id="btnLayerAdd" class="layers__btn">Add layer</button>
       </div>
     </div>
     <script src="./js/index.js"></script>

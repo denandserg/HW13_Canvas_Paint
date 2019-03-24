@@ -207,7 +207,6 @@ function addCurrentLayerButton(count, arrName) {
   curLabel.innerHTML = count;
   curAddLayer.classList.add("layers__curLayer");
   curButtonDelLayer.classList.add("current-button-delete-layer");
-  curButtonDelLayer.innerHTML = "Del";
   curButtonDelLayer.value = count;
   curAddLayer.appendChild(curLabel);
   curAddLayer.appendChild(curInputRadio);
@@ -221,83 +220,11 @@ function drawOnCurrentLayer (e) {
   mouse.x = e.pageX - canvasAll.offsetLeft;
   mouse.y = e.pageY - canvasAll.offsetTop;
   currentLayer.render = function (canvas, ctx) {
-    ctx.beginPath();
-    ctx.moveTo(mouse.x, mouse.y);
     ctx.strokeStyle = btnColor.value;
     ctx.lineWidth = size.value;
     ctx.lineTo(mouse.x, mouse.y);
-    ctx.closePath();
     ctx.stroke();
   };
   myCanvas.render();
-  console.log(currentLayer);
 }
 
-myCanvas
-  .addLayer({
-    id: "0",
-    render: function(canvas, ctx) {
-
-    }
-  })
-  .addLayer({
-    id: "1",
-    render: function(canvas, ctx) {
-
-
-      ctx.fillStyle = "#BDD358";
-      ctx.fillRect(350, 75, 150, 150);
-
-      ctx.fillStyle = "#E5625E";
-      ctx.fillRect(50, 250, 100, 250);
-    }
-  })
-  .addLayer({
-    id: "2",
-    render: function(canvas, ctx) {
-      ctx.fillStyle = "#558B6E";
-      ctx.beginPath();
-      ctx.arc(75, 75, 80, 0, 2 * Math.PI);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.fillStyle = "#88A09E";
-      ctx.arc(275, 275, 150, 0, 2 * Math.PI);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.fillStyle = "#704C5E";
-      ctx.arc(450, 450, 50, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  })
-  .addLayer({
-    id: "3",
-    render: function(canvas, ctx) {
-      ctx.fillStyle = "#DAF7A6";
-      ctx.beginPath();
-      ctx.moveTo(120, 400);
-      ctx.lineTo(250, 300);
-      ctx.lineTo(300, 500);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = "#FFC300";
-      ctx.beginPath();
-      ctx.moveTo(400, 100);
-      ctx.lineTo(350, 300);
-      ctx.lineTo(230, 200);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = "#C70039";
-      ctx.beginPath();
-      ctx.moveTo(100, 100);
-      ctx.lineTo(100, 300);
-      ctx.lineTo(300, 300);
-      ctx.closePath();
-      ctx.fill();
-    }
-  });
-
-myCanvas.render();
