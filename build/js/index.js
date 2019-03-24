@@ -308,6 +308,11 @@ SOFTWARE.
 }).call(void 0);
 "use strict";
 
+window.onload = function () {
+  initPaint();
+  initLayers();
+};
+
 var btnBrush = document.getElementById("btnBrush");
 var btnBlur = document.getElementById("btnBlur");
 var btnAddLayer = document.getElementById("btnLayerAdd");
@@ -316,7 +321,6 @@ var btnHexagon = document.getElementById("btnHexagon");
 var btnCircle = document.getElementById("btnCircle");
 var divLayers = document.getElementById("layers");
 var canvasAll = document.getElementById('paint');
-var btnColor = document.getElementById('btnColor');
 var size = document.getElementById('size');
 var btnDel;
 var radios;
@@ -335,36 +339,6 @@ var nameLayer = [{
   key: 3,
   value: "Third layer"
 }];
-var myCanvas = new LayeredCanvas("paint");
-var mouse = {
-  x: 0,
-  y: 0
-};
-var mouseStart = {
-  x: 0,
-  y: 0
-};
-var draw = false;
-
-function drawMove(e) {
-  if (draw === true) {
-    drawOnCurrentLayer(e);
-  }
-}
-
-function drawFalse() {
-  draw = false;
-}
-
-function drawTrue(e) {
-  draw = true;
-  mouseStart.x = e.pageX - canvasAll.offsetLeft;
-  mouseStart.y = e.pageY - canvasAll.offsetTop;
-}
-
-myCanvas.canvas.addEventListener("mousedown", drawTrue);
-myCanvas.canvas.addEventListener("mousemove", drawMove);
-myCanvas.canvas.addEventListener("mouseup", drawFalse);
 btnBrush.addEventListener("click", changeActiveBrush);
 btnBlur.addEventListener("click", changeActiveBlur);
 btnAddLayer.addEventListener("click", addLayer);
@@ -372,7 +346,7 @@ btnSquare.addEventListener("click", changeActive);
 btnCircle.addEventListener("click", changeActive);
 btnHexagon.addEventListener("click", changeActive);
 
-function changeActiveTools() {
+function changeOffTools() {
   var allBtnFigure = document.querySelectorAll(".figures__btn");
   allBtnFigure.forEach(function (btn) {
     btn.dataset.flag = "off";
@@ -383,28 +357,26 @@ function changeActiveTools() {
 }
 
 function changeActive(e) {
-  changeActiveTools(e);
+  changeOffTools(e);
 
   if (e.target.dataset.flag === "off") {
     e.target.dataset.flag = "on";
     e.target.classList.add("button-wrapper__btn--active");
+    paintOptions.setMode("figure");
+    paintOptions.getCursor(e.target.dataset.id);
   } else {
     e.target.dataset.flag = "off";
     e.target.classList.remove("button-wrapper__btn--active");
   }
 }
 
-function getCurrentLayer(event) {
-  currentActiveLayer = +event.target.id;
-  myCanvas.getLayer(currentActiveLayer);
-}
-
 function changeActiveBrush(e) {
-  changeActiveTools(e);
+  changeOffTools(e);
 
   if (btnBrush.dataset.flag === "off") {
     btnBrush.dataset.flag = "on";
     btnBrush.classList.add("button-wrapper__btn--active");
+    paintOptions.figure = '';
   } else {
     btnBrush.dataset.flag = "off";
     btnBrush.classList.toggle("button-wrapper__btn--active");
@@ -415,97 +387,20 @@ function changeActiveBlur() {
   if (btnBlur.dataset.flag === "off") {
     btnBlur.dataset.flag = "on";
     btnBlur.classList.add("button-wrapper__btn--active");
+    paintOptions.filter = 'blur(3px)';
   } else {
     btnBlur.dataset.flag = "off";
     btnBlur.classList.toggle("button-wrapper__btn--active");
+    paintOptions.filter = '';
   }
-}
-
-function LayeredCanvas(id) {
-  this.layers = [];
-
-  var extend = function extend(defaults, options) {
-    var extended = {},
-        prop;
-
-    for (prop in defaults) {
-      if (Object.prototype.hasOwnProperty.call(defaults, prop)) extended[prop] = defaults[prop];
-    }
-
-    for (prop in options) {
-      if (Object.prototype.hasOwnProperty.call(options, prop)) extended[prop] = options[prop];
-    }
-
-    return extended;
-  };
-
-  this.addLayer = function (obj) {
-    var layer = extend({
-      id: Math.random().toString(36).substr(2, 5),
-      show: true,
-      render: function render(canvas, ctx) {}
-    }, obj);
-
-    if (this.getLayer(layer.id) !== false) {
-      console.log("Layer already exists");
-      console.log(obj);
-      return false;
-    }
-
-    this.layers.push(layer);
-    return this;
-  };
-
-  this.getLayer = function (id) {
-    var length = this.layers.length;
-
-    for (var i = 0; i < length; i++) {
-      if (this.layers[i].id === id) return this.layers[i];
-    }
-
-    return false;
-  };
-
-  this.removeLayer = function (id) {
-    var length = this.layers.length;
-
-    for (var i = 0; i < length; i++) {
-      if (this.layers[i].id === id) {
-        var removed = this.layers[i];
-        this.layers.splice(i, 1);
-        return removed;
-      }
-    }
-
-    return false;
-  };
-
-  this.render = function () {
-    var canvas = this.canvas;
-    var ctx = this.ctx2d;
-    this.layers.forEach(function (item, index, array) {
-      if (item.show) item.render(canvas, ctx);
-    });
-  };
-
-  this.canvas = document.getElementById(id);
-  this.ctx2d = this.canvas.getContext("2d");
 }
 
 function addLayer() {
   addCurrentLayerButton(countLayer, nameLayer);
   radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
   btnDel = document.querySelectorAll(".current-button-delete-layer");
-  myCanvas.addLayer({
-    id: countLayer++,
-    render: function render(canvas, ctx) {
-      if (countLayer === 0) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-  });
-  myCanvas.render();
+  var tabContentActiveElem = document.querySelector(".layers");
+  var newCanvas = layer.add(tabContentActiveElem);
   radios.forEach(function (el) {
     el.addEventListener("click", getCurrentLayer);
   });
@@ -515,20 +410,32 @@ function addLayer() {
 }
 
 function deleteCurrentLayer(e) {
-  var curLayers = document.getElementsByClassName("layers__curLayer");
-
-  for (var i = 0; i < curLayers.length; i++) {
-    if (curLayers[i].dataset.flag === e.target.value) {
-      divLayers.removeChild(curLayers[i]);
+  var allCanvas = document.querySelectorAll(".canvas");
+  var allLayers = document.querySelectorAll(".layers__curLayer");
+  allCanvas.forEach(function (el) {
+    if (e.target.value === el.dataset.id) {
+      el.remove();
     }
-  }
-
-  myCanvas.removeLayer(+e.target.value);
-  countLayer--;
-  myCanvas.render();
+  });
+  allLayers.forEach(function (el) {
+    if (e.target.value === el.dataset.flag) {
+      el.remove();
+    }
+  });
 }
 
-function addCurrentLayerButton(count, arrName) {
+function getCurrentLayer(e) {
+  var allCanvas = document.querySelectorAll(".canvas");
+  allCanvas.forEach(function (el) {
+    el.classList.remove('active');
+
+    if (e.target.id === el.dataset.id) {
+      el.classList.add("active");
+    }
+  });
+}
+
+function addCurrentLayerButton(count) {
   var curAddLayer = document.createElement("div");
   var curLabel = document.createElement("label");
   var curInputRadio = document.createElement("input");
@@ -541,11 +448,11 @@ function addCurrentLayerButton(count, arrName) {
   if (count === 0) {
     curInputRadio.checked = true;
     curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = arrName[0].value;
+    curLabelNameLayer.innerHTML = 'Canvas layer';
   } else {
     curInputRadio.checked = false;
     curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = arrName[count].value;
+    curLabelNameLayer.innerHTML = 'Canvas layer';
   }
 
   curLabel.innerHTML = count;
@@ -558,20 +465,318 @@ function addCurrentLayerButton(count, arrName) {
   curAddLayer.appendChild(curButtonDelLayer);
   divLayers.appendChild(curAddLayer);
 }
+"use strict";
 
-function drawOnCurrentLayer(e) {
-  var currentLayer = myCanvas.getLayer(currentActiveLayer);
-  mouse.x = e.pageX - canvasAll.offsetLeft;
-  mouse.y = e.pageY - canvasAll.offsetTop;
+var activeTab = {
+  id: 1
+};
+var layer = new Layers();
 
-  currentLayer.render = function (canvas, ctx) {
-    ctx.strokeStyle = btnColor.value;
-    ctx.lineWidth = size.value;
-    ctx.lineTo(mouse.x, mouse.y);
-    ctx.stroke();
+function initLayers() {
+  var tabContentsElem = document.querySelector("#tab-1");
+  tabContentsElem.addEventListener("click", function () {
+    var target = event.target;
+
+    if (target.closest('.add-layer')) {
+      var tabContentActiveElem = document.querySelector(".layers");
+      var layerElem = tabContentActiveElem.querySelector(".layers");
+      var newCanvas = layer.add(tabContentActiveElem, layerElem);
+      return;
+    }
+
+    if (target.closest('.layer__delete')) {
+      layer.delete(target.closest('.layer__delete').parentElement, tabContentsElem);
+      return;
+    }
+
+    if (target.closest('.layer') && !target.closest('.layer__delete')) {
+      var _tabContentActiveElem = document.querySelector(".tabcontent.active");
+
+      var allLayers = _tabContentActiveElem.querySelectorAll(".layer");
+
+      var arrayOfCanvas = _tabContentActiveElem.querySelectorAll(".canvas");
+
+      var activeTabId = _tabContentActiveElem.id;
+      var activeLayerId = target.closest('.layer').dataset.id;
+      var canvasId = "canvas-" + activeTabId + "__layer-" + activeLayerId;
+      var activeCanvas = document.getElementById(canvasId);
+
+      for (var i = 0; i < arrayOfCanvas.length; i++) {
+        arrayOfCanvas[i].classList.remove("active");
+      }
+
+      activeCanvas.classList.add("active");
+
+      for (var _i = 0; _i < allLayers.length; _i++) {
+        allLayers[_i].classList.remove("active");
+      }
+
+      target.closest('.layer').classList.add("active");
+      return;
+    }
+  });
+}
+
+function Layers() {
+  this.add = function (layerElem, id) {
+    var tab1 = document.getElementById('tab-1');
+    var allLayers = document.querySelectorAll(".layer");
+    var allCanvases = document.querySelectorAll(".canvas");
+    var count = this.getId(id, allLayers);
+    var canvas = createCanvas(activeTab.id, countLayer);
+    this.makeActive(canvas, allCanvases);
+    tab1.appendChild(canvas);
+    canvas.paintObj = new Paint(canvas, paintOptions);
+    countLayer++;
+    return canvas;
   };
 
-  myCanvas.render();
+  this.getId = function (id, allLayers) {
+    var count;
+
+    if (id === undefined) {
+      if (allLayers.length === 0) {
+        count = 1;
+      } else {
+        count = allLayers[allLayers.length - 1].dataset.id;
+        count++;
+      }
+    } else {
+      count = id;
+    }
+
+    return count;
+  };
+
+  this.makeActive = function (elem, collection) {
+    for (var i = 0; i < collection.length; i++) {
+      collection[i].classList.remove("active");
+    }
+
+    elem.classList.add("active");
+  };
+
+  this.delete = function (layerElem, tabContentsElem) {
+    var activeTabContent = tabContentsElem.querySelector(".tabcontent.active");
+    var layerBlock = document.querySelector(".layers-block__layers");
+    deleteCanvas(layerElem.dataset.id, activeTabContent);
+    layerElem.remove();
+    if (!layerBlock.lastChild) return;
+    layerBlock.lastChild.classList.add("active");
+  };
+
+  function createCanvas(id, count) {
+    var canvas = document.createElement("canvas");
+    canvas.classList.add("canvas");
+    canvas.id = "canvas-" + id + "__layer-" + count;
+    canvas.dataset.id = count;
+    canvas.dataset.tabId = id;
+    canvas.width = 800;
+    canvas.height = 500;
+    return canvas;
+  } /////////////////////////////////////////////////////////
+
+
+  function deleteCanvas(id, activeTabContent) {
+    var canvasId = "canvas-" + activeTab.id + "__layer-" + 1;
+    document.getElementById(canvasId).remove();
+    activeTabContent.lastChild.classList.add("active");
+  }
+}
+
+function initPaint() {
+  addEventListeners();
+}
+
+function addEventListeners() {
+  var tabContentsElem = document.getElementById("tab-1");
+  var canvasCoordXElem = document.getElementById("canvasCoordX");
+  var canvasCoordYElem = document.getElementById("canvasCoordY");
+  var rngElem = document.getElementById('size');
+  var colorElem = document.getElementById("btnColor"); // function getActiveCanvas() {
+  //   return tabContentsElem.querySelector(".tabcontent.active canvas.active");
+  // }
+  // function getActiveTab() {
+  //   return tabContentsElem.querySelector(".tabcontent.active");
+  // }
+
+  tabContentsElem.addEventListener('mousemove', function (event) {
+    if (event.target.tagName !== "CANVAS") return;
+    canvasCoordXElem.innerHTML = event.offsetX;
+    canvasCoordYElem.innerHTML = event.offsetY;
+  });
+  colorElem.addEventListener('input', function () {
+    paintOptions.setColor(colorElem.value);
+  });
+  rngElem.addEventListener('input', function () {
+    paintOptions.setSize(rngElem.value);
+  });
+  btnBrush.addEventListener('click', function () {
+    paintOptions.setMode("brush");
+  });
+}
+
+function getLayers(array) {
+  var arrayOfLayers = [];
+
+  for (var i = 0; i < array.length; i++) {
+    var _layer = {
+      id: array[i].dataset.id,
+      image: array[i].toDataURL()
+    };
+    arrayOfLayers.push(_layer);
+  }
+
+  return arrayOfLayers;
+}
+"use strict";
+
+var paintOptions = new PaintOptions();
+
+function PaintOptions() {
+  this.fillColor = "#000000";
+  this.mode = "";
+  this.figure = "";
+  this.size = 15;
+  this.filter = "";
+  this.cursor = "auto";
+  this.image = "";
+  this.paintings = [];
+  var self = this;
+
+  this.setSize = function (size) {
+    this.size = +size;
+    getFigureForCursor();
+  };
+
+  this.setColor = function (fillColor) {
+    this.fillColor = fillColor;
+    getFigureForCursor();
+  };
+
+  this.setMode = function (mode) {
+    this.mode = mode;
+    this.setCursor('auto');
+  };
+
+  this.setCursor = function (cursor) {
+    self.cursor = cursor;
+    self.paintings.forEach(function (paint) {
+      var canvas = paint.canvas;
+
+      if (cursor === "auto") {
+        canvas.style.cursor = cursor;
+        return;
+      }
+
+      canvas.style.cursor = 'url(' + cursor + '), auto';
+    });
+  };
+
+  this.getCursor = function (figure) {
+    this.mode = "figure";
+    this.figure = figure;
+    getFigureForCursor();
+  };
+
+  function getFigureForCursor() {
+    if (self.mode !== "figure") return;
+    var cursor = document.createElement('canvas');
+    var ctxCurs = cursor.getContext('2d');
+    cursor.width = self.size + 2;
+    cursor.height = self.size + 2;
+    ctxCurs.strokeStyle = self.fillColor;
+    getFigure(ctxCurs, self.size, self.figure, 1, 1);
+    self.setCursor(cursor.toDataURL());
+  }
+}
+
+function Paint(canvas, options) {
+  this.canvas = canvas;
+  this.options = options;
+  options.paintings.push(this);
+  options.setCursor(options.cursor);
+  var self = this;
+  canvas.addEventListener('mousedown', function (event) {
+    self.mouseMoveHandler(event);
+    self.drawFigure(event);
+  });
+  window.addEventListener('mouseup', function () {
+    canvas.onmousemove = null;
+  });
+
+  this.clear = function (canvas) {
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  this.drawFigure = function (event) {
+    if (self.options.mode !== "figure") return;
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle = self.options.fillColor;
+    ctx.fillStyle = self.options.fillColor;
+    ctx.filter = self.options.filter;
+    getFigure(ctx, self.options.size, self.options.figure, event.offsetX, event.offsetY);
+  };
+
+  this.mouseMoveHandler = function (event) {
+    if (self.options.mode !== "brush") return;
+
+    if (canvas && canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = self.options.fillColor;
+
+      canvas.onmousemove = function (event) {
+        ctx.fillRect(event.offsetX - self.options.size / 2, event.offsetY - self.options.size / 2, self.options.size, self.options.size);
+      };
+
+      canvas.onmouseup = function () {
+        canvas.onmousemove = null;
+      };
+    }
+  };
+}
+
+function getFigure(ctx, size, figure, x, y) {
+  var side = Math.sqrt(Math.pow(size / 2, 2) - Math.pow(size / 4, 2));
+
+  switch (figure) {
+    case "circle":
+      ctx.beginPath();
+      ctx.arc(x + size / 2, y + size / 2, size / 2, 0, 13 * Math.PI / 2); // ctx.filter = filter;
+
+      ctx.stroke();
+      break;
+
+    case "square":
+      ctx.beginPath(); // ctx.filter = filter;
+
+      ctx.strokeRect(x, y, size, size);
+      break;
+
+    case "hexagon":
+      ctx.beginPath();
+      ctx.moveTo(x + size / 4, y - side + size / 2);
+      ctx.lineTo(x, y + size / 2);
+      ctx.lineTo(x + size / 4, y + side + size / 2);
+      ctx.lineTo(x + size / 4 + size / 2, y + side + size / 2);
+      ctx.lineTo(x + size, y + size / 2);
+      ctx.lineTo(x + size / 4 + size / 2, y - side + size / 2);
+      ctx.lineTo(x + size / 4, y - side + size / 2); // ctx.filter = filter;
+
+      ctx.stroke();
+      break;
+  }
+
+  return ctx;
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    Paint: Paint,
+    PaintOptions: PaintOptions,
+    getFigure: getFigure
+  };
 }
 "use strict";
 
@@ -580,13 +785,7 @@ var contentDropDownLangElem = document.querySelector(".dropdown-content_lang");
 var btnDropDownElem = document.querySelector(".dropbtn-settings");
 var DropDownSetElem = document.querySelector(".dropdown-content-settings");
 var langObj = i18n.create({
-  values: {
-    "Settings": "Settings",
-    "Theme": "Theme",
-    "Lang": "Lang",
-    "Sheet": "Sheet",
-    "AddBtn": "add"
-  }
+  values: {}
 });
 DropDownSetElem.addEventListener("click", function (event) {
   var DropDownContentThemeElem = document.querySelector(".dropdown-content_theme");
@@ -669,7 +868,7 @@ function changeLange() {
 
 function changeTheme(href) {
   var head = document.getElementsByTagName('head')[0];
-  var cssId = 'theme'; // you could encode the css path itself to generate id..
+  var cssId = 'theme';
 
   if (document.getElementById(cssId)) {
     head.removeChild(document.getElementById(cssId));

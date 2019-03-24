@@ -5,13 +5,7 @@ const DropDownSetElem = document.querySelector(".dropdown-content-settings");
 
 let langObj = i18n.create({
   values:
-  {
-    "Settings":"Settings",
-    "Theme":"Theme",
-    "Lang":"Lang",
-    "Sheet":"Sheet",
-    "AddBtn":"add"
-}
+  {}
 });
 
 DropDownSetElem.addEventListener("click", function(event) {
@@ -90,7 +84,7 @@ function changeLange() {
 
 function changeTheme(href) {
     let head  = document.getElementsByTagName('head')[0];
-    let cssId = 'theme';  // you could encode the css path itself to generate id..
+    let cssId = 'theme';
     if (document.getElementById(cssId)) {
         head.removeChild(document.getElementById(cssId));
     }

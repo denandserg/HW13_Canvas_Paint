@@ -9,13 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Paint on Canvas</title>
     <link rel="stylesheet" href="./css/styles.css" />
-    <link href="./css/light-theme.css" rel="stylesheet" id="theme">
+    <link href="./css/light-theme.css" rel="stylesheet" id="theme" />
   </head>
   <body>
     <h2 class="title" data-lang="Paint on Canvas">Paint on Canvas</h2>
     <div class="button-wrapper">
       <div class="dropdown">
-        <button class="button-wrapper__btn dropbtn dropbtn-settings" data-lang="Settings">Settings</button>
+        <button class="button-wrapper__btn dropbtn dropbtn-settings"
+          data-lang="Settings">Settings</button>
         <div class="dropdown-content-settings">
           <span data-id="theme" data-lang="Theme">Theme</span>
           <div class="dropdown-content_theme">
@@ -29,10 +30,20 @@
           </div>
         </div>
       </div>
-      <button id="btnBrush" class="button-wrapper__btn" data-flag="off" data-lang="Brush">
+      <button
+        id="btnBrush"
+        class="button-wrapper__btn"
+        data-flag="off"
+        data-lang="Brush"
+      >
         Brush
       </button>
-      <button id="btnBlur" class="button-wrapper__btn" data-flag="off" data-lang="Blur">
+      <button
+        id="btnBlur"
+        class="button-wrapper__btn"
+        data-flag="off"
+        data-lang="Blur"
+      >
         Blur
       </button>
       <div class="button-wrapper__btn">
@@ -43,7 +54,7 @@
           type="number"
           min="1"
           max="100"
-          value="1"
+          value="15"
           placeholder="Size"
         />
       </div>
@@ -53,17 +64,38 @@
     <div class="module-wrapper">
       <div class="figures">
         <h3 data-lang="Figures panel">Figures panel</h3>
-        <button id="btnSquare" class="figures__btn figures__btn--square" data-flag="off"></button>
-        <button id="btnHexagon" class="figures__btn figures__btn--hexagon" data-flag="off"></button>
-        <button id="btnCircle" class="figures__btn figures__btn--circle" data-flag="off"></button>
+        <button
+          id="btnSquare"
+          class="figures__btn figures__btn--square"
+          data-flag="off"
+          data-id="square"
+        ></button>
+        <button
+          id="btnHexagon"
+          class="figures__btn figures__btn--hexagon"
+          data-flag="off"
+          data-id="hexagon"
+        ></button>
+        <button
+          id="btnCircle"
+          class="figures__btn figures__btn--circle"
+          data-flag="off"
+          data-id="circle"
+        ></button>
       </div>
-      <div class="canvas">
-        <canvas id="paint" width="800" height="500"></canvas>
+      <div id="tab-1" class="tabcontent active">
       </div>
       <div class="layers" id="layers">
         <h3 data-lang="Layout panel">Layout panel</h3>
-        <button data-lang="Add layer" id="btnLayerAdd" class="layers__btn">Add layer</button>
+        <button data-lang="Add layer" id="btnLayerAdd" class="layers__btn">
+          Add layer
+        </button>
       </div>
+    </div>
+    <div class="canvas-coordinates" style="display: none;">
+      <span class="canvas-coord-x">X: <span id="canvasCoordX"></span></span>
+
+      <span class="canvas-coord-y">Y: <span id="canvasCoordY"></span></span>
     </div>
     <script src="./js/index.js"></script>
   </body>

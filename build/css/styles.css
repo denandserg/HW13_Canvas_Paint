@@ -358,7 +358,7 @@ body {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 80px;
+  min-width: 120px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
@@ -379,7 +379,7 @@ body {
   display: none;
   position: absolute;
   left: 100%;
-  top: 83px;
+  top: 40px;
   background-color: #f9f9f9;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   min-width: 80px;
@@ -450,7 +450,7 @@ body {
   background-image: url('../img/btnHexagon.svg');
   background-size: cover;
 }
-.canvas {
+.tabcontent {
   border: 1px solid red;
   width: 800px;
   height: 500px;
@@ -497,4 +497,14 @@ body {
   height: 25px;
   outline: none;
   border-radius: 10px;
+}
+.canvas {
+  width: 800px;
+  /*300px sidebar, 17px scroll */
+  height: 500px;
+  position: absolute;
+  pointer-events: none;
+}
+.canvas.active {
+  pointer-events: auto;
 }
