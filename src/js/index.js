@@ -1,6 +1,9 @@
 const btnBrush = document.getElementById("btnBrush");
 const btnBlur = document.getElementById("btnBlur");
 const btnAddLayer = document.getElementById("btnLayerAdd");
+const btnSquare = document.getElementById("btnSquare");
+const btnHexagon = document.getElementById("btnHexagon");
+const btnCircle = document.getElementById("btnCircle");
 const divLayers = document.getElementById("layers");
 const canvasAll = document.getElementById('paint');
 const btnColor = document.getElementById('btnColor');
@@ -9,6 +12,7 @@ let btnDel;
 let radios;
 let countLayer = 0;
 let currentActiveLayer = 0;
+
 const nameLayer = [
   { key: 0, value: "Background layer" },
   { key: 1, value: "First layer" },
@@ -51,15 +55,40 @@ myCanvas.canvas.addEventListener("mouseup", drawFalse);
 btnBrush.addEventListener("click", changeActiveBrush);
 btnBlur.addEventListener("click", changeActiveBlur);
 btnAddLayer.addEventListener("click", addLayer);
+btnSquare.addEventListener("click", changeActive);
+btnCircle.addEventListener("click", changeActive);
+btnHexagon.addEventListener("click", changeActive);
+
+function changeActiveTools() {
+  const allBtnFigure = document.querySelectorAll(".figures__btn");
+  allBtnFigure.forEach(btn => {
+    btn.dataset.flag = "off";
+    btn.classList.remove("button-wrapper__btn--active");
+    btnBrush.dataset.flag = "off";
+    btnBrush.classList.remove("button-wrapper__btn--active");
+  });
+}
+
+function changeActive (e) {
+  changeActiveTools(e);
+  if (e.target.dataset.flag === "off") {
+    e.target.dataset.flag = "on";
+    e.target.classList.add("button-wrapper__btn--active");
+  } else {
+    e.target.dataset.flag = "off";
+    e.target.classList.remove("button-wrapper__btn--active");
+  }
+}
 
 function getCurrentLayer(event) {
   currentActiveLayer = +event.target.id;
   myCanvas.getLayer(currentActiveLayer);
 }
 
-function changeActiveBrush() {
+
+function changeActiveBrush(e) {
+  changeActiveTools(e);
   if (btnBrush.dataset.flag === "off") {
-    console.log(btnBrush);
     btnBrush.dataset.flag = "on";
     btnBrush.classList.add("button-wrapper__btn--active");
   } else {
@@ -70,7 +99,6 @@ function changeActiveBrush() {
 
 function changeActiveBlur() {
   if (btnBlur.dataset.flag === "off") {
-    console.log(btnBrush);
     btnBlur.dataset.flag = "on";
     btnBlur.classList.add("button-wrapper__btn--active");
   } else {

@@ -438,6 +438,18 @@ body {
   width: 40px;
   height: 40px;
 }
+.figures__btn--circle {
+  background-image: url('../img/btnCircle.svg');
+  background-size: cover;
+}
+.figures__btn--square {
+  background-image: url('../img/btnSquare.svg');
+  background-size: cover;
+}
+.figures__btn--hexagon {
+  background-image: url('../img/btnHexagon.svg');
+  background-size: cover;
+}
 .canvas {
   border: 1px solid red;
   width: 800px;

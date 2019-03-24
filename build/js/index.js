@@ -311,6 +311,9 @@ SOFTWARE.
 var btnBrush = document.getElementById("btnBrush");
 var btnBlur = document.getElementById("btnBlur");
 var btnAddLayer = document.getElementById("btnLayerAdd");
+var btnSquare = document.getElementById("btnSquare");
+var btnHexagon = document.getElementById("btnHexagon");
+var btnCircle = document.getElementById("btnCircle");
 var divLayers = document.getElementById("layers");
 var canvasAll = document.getElementById('paint');
 var btnColor = document.getElementById('btnColor');
@@ -365,15 +368,41 @@ myCanvas.canvas.addEventListener("mouseup", drawFalse);
 btnBrush.addEventListener("click", changeActiveBrush);
 btnBlur.addEventListener("click", changeActiveBlur);
 btnAddLayer.addEventListener("click", addLayer);
+btnSquare.addEventListener("click", changeActive);
+btnCircle.addEventListener("click", changeActive);
+btnHexagon.addEventListener("click", changeActive);
+
+function changeActiveTools() {
+  var allBtnFigure = document.querySelectorAll(".figures__btn");
+  allBtnFigure.forEach(function (btn) {
+    btn.dataset.flag = "off";
+    btn.classList.remove("button-wrapper__btn--active");
+    btnBrush.dataset.flag = "off";
+    btnBrush.classList.remove("button-wrapper__btn--active");
+  });
+}
+
+function changeActive(e) {
+  changeActiveTools(e);
+
+  if (e.target.dataset.flag === "off") {
+    e.target.dataset.flag = "on";
+    e.target.classList.add("button-wrapper__btn--active");
+  } else {
+    e.target.dataset.flag = "off";
+    e.target.classList.remove("button-wrapper__btn--active");
+  }
+}
 
 function getCurrentLayer(event) {
   currentActiveLayer = +event.target.id;
   myCanvas.getLayer(currentActiveLayer);
 }
 
-function changeActiveBrush() {
+function changeActiveBrush(e) {
+  changeActiveTools(e);
+
   if (btnBrush.dataset.flag === "off") {
-    console.log(btnBrush);
     btnBrush.dataset.flag = "on";
     btnBrush.classList.add("button-wrapper__btn--active");
   } else {
@@ -384,7 +413,6 @@ function changeActiveBrush() {
 
 function changeActiveBlur() {
   if (btnBlur.dataset.flag === "off") {
-    console.log(btnBrush);
     btnBlur.dataset.flag = "on";
     btnBlur.classList.add("button-wrapper__btn--active");
   } else {
