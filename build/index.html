@@ -15,18 +15,22 @@
     <h2 class="title" data-lang="Paint on Canvas">Paint on Canvas</h2>
     <div class="button-wrapper">
       <div class="dropdown">
-        <button class="button-wrapper__btn dropbtn dropbtn-settings"
-          data-lang="Settings">Settings</button>
+        <button
+          class="button-wrapper__btn dropbtn dropbtn-settings"
+          data-lang="Settings"
+        >
+          Settings
+        </button>
         <div class="dropdown-content-settings">
           <span data-id="theme" data-lang="Theme">Theme</span>
           <div class="dropdown-content_theme">
             <span data-id="dark" data-lang="Dark">Dark</span>
             <span data-id="light" data-lang="Light">Light</span>
           </div>
-          <span data-id="lang" data-lang="Lang">Lang</span>
+          <span data-id="lang" data-lang="Language">Language</span>
           <div class="dropdown-content_lang">
-            <span data-id="eng" data-lang="Eng">Eng</span>
-            <span data-id="rus" data-lang="Rus">Rus</span>
+            <span data-id="eng" data-lang="English">English</span>
+            <span data-id="rus" data-lang="Russian">Russian</span>
           </div>
         </div>
       </div>
@@ -83,8 +87,7 @@
           data-id="circle"
         ></button>
       </div>
-      <div id="tab-1" class="tabcontent active">
-      </div>
+      <div id="tab-1" class="tabcontent active"></div>
       <div class="layers" id="layers">
         <h3 data-lang="Layout panel">Layout panel</h3>
         <button data-lang="Add layer" id="btnLayerAdd" class="layers__btn">
@@ -94,7 +97,6 @@
     </div>
     <div class="canvas-coordinates" style="display: none;">
       <span class="canvas-coord-x">X: <span id="canvasCoordX"></span></span>
-
       <span class="canvas-coord-y">Y: <span id="canvasCoordY"></span></span>
     </div>
     <script src="./js/index.js"></script>

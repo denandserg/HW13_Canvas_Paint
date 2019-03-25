@@ -1,6 +1,6 @@
 window.onload = () => {
+  init();
   initPaint();
-  initLayers();
 };
 
 const btnBrush = document.getElementById("btnBrush");
@@ -10,27 +10,20 @@ const btnSquare = document.getElementById("btnSquare");
 const btnHexagon = document.getElementById("btnHexagon");
 const btnCircle = document.getElementById("btnCircle");
 const divLayers = document.getElementById("layers");
-const canvasAll = document.getElementById('paint');
 const size = document.getElementById('size');
 
 let btnDel;
 let radios;
 let countLayer = 0;
-let currentActiveLayer = 0;
 
-const nameLayer = [
-  { key: 0, value: "Background layer" },
-  { key: 1, value: "First layer" },
-  { key: 2, value: "Second layer" },
-  { key: 3, value: "Third layer" }
-];
-
-btnBrush.addEventListener("click", changeActiveBrush);
-btnBlur.addEventListener("click", changeActiveBlur);
-btnAddLayer.addEventListener("click", addLayer);
-btnSquare.addEventListener("click", changeActive);
-btnCircle.addEventListener("click", changeActive);
-btnHexagon.addEventListener("click", changeActive);
+function init() {
+  btnBrush.addEventListener("click", changeActiveBrush);
+  btnBlur.addEventListener("click", changeActiveBlur);
+  btnAddLayer.addEventListener("click", addLayer);
+  btnSquare.addEventListener("click", changeActiveFigure);
+  btnCircle.addEventListener("click", changeActiveFigure);
+  btnHexagon.addEventListener("click", changeActiveFigure);
+}
 
 function changeOffTools() {
   const allBtnFigure = document.querySelectorAll(".figures__btn");
@@ -42,7 +35,7 @@ function changeOffTools() {
   });
 }
 
-function changeActive (e) {
+function changeActiveFigure(e) {
   changeOffTools(e);
   if (e.target.dataset.flag === "off") {
     e.target.dataset.flag = "on";
@@ -71,17 +64,17 @@ function changeActiveBlur() {
   if (btnBlur.dataset.flag === "off") {
     btnBlur.dataset.flag = "on";
     btnBlur.classList.add("button-wrapper__btn--active");
-    paintOptions.filter = 'blur(3px)';
+    paintOptions.filter = 'blur(2px)';
 
   } else {
     btnBlur.dataset.flag = "off";
     btnBlur.classList.toggle("button-wrapper__btn--active");
-    paintOptions.filter = '';
+    paintOptions.filter = 'none';
   }
 }
 
 function addLayer() {
-  addCurrentLayerButton(countLayer, nameLayer);
+  addCurrentLayerButton(countLayer);
   radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
   btnDel = document.querySelectorAll(".current-button-delete-layer");
   const tabContentActiveElem = document.querySelector(".layers");
@@ -94,7 +87,7 @@ function addLayer() {
   });
 }
 
-function deleteCurrentLayer (e) {
+function deleteCurrentLayer(e) {
   const allCanvas = document.querySelectorAll(".canvas");
   const allLayers = document.querySelectorAll(".layers__curLayer");
   allCanvas.forEach(el=>{
@@ -107,9 +100,10 @@ function deleteCurrentLayer (e) {
       el.remove();
     }
   });
+  countLayer--;
 }
 
-function getCurrentLayer (e) {
+function getCurrentLayer(e) {
   const allCanvas = document.querySelectorAll(".canvas");
   allCanvas.forEach(el=>{
     el.classList.remove('active');
@@ -130,13 +124,14 @@ function addCurrentLayerButton(count) {
   curInputRadio.name = "radioLayer";
   if (count === 0) {
     curInputRadio.checked = true;
-    curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = 'Canvas layer';
+    // curInputRadio.id = count;
+    // curLabelNameLayer.innerHTML = 'Canvas layer';
   } else {
     curInputRadio.checked = false;
-    curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = 'Canvas layer';
   }
+  curInputRadio.id = count;
+  curLabelNameLayer.innerHTML = 'Canvas layer';
+  curLabelNameLayer.dataset.lang = 'Canvas layer';
   curLabel.innerHTML = count;
   curAddLayer.classList.add("layers__curLayer");
   curButtonDelLayer.classList.add("current-button-delete-layer");
@@ -146,6 +141,5 @@ function addCurrentLayerButton(count) {
   curAddLayer.appendChild(curLabelNameLayer);
   curAddLayer.appendChild(curButtonDelLayer);
   divLayers.appendChild(curAddLayer);
-
 }
 

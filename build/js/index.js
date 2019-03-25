@@ -309,8 +309,8 @@ SOFTWARE.
 "use strict";
 
 window.onload = function () {
+  init();
   initPaint();
-  initLayers();
 };
 
 var btnBrush = document.getElementById("btnBrush");
@@ -320,31 +320,19 @@ var btnSquare = document.getElementById("btnSquare");
 var btnHexagon = document.getElementById("btnHexagon");
 var btnCircle = document.getElementById("btnCircle");
 var divLayers = document.getElementById("layers");
-var canvasAll = document.getElementById('paint');
 var size = document.getElementById('size');
 var btnDel;
 var radios;
 var countLayer = 0;
-var currentActiveLayer = 0;
-var nameLayer = [{
-  key: 0,
-  value: "Background layer"
-}, {
-  key: 1,
-  value: "First layer"
-}, {
-  key: 2,
-  value: "Second layer"
-}, {
-  key: 3,
-  value: "Third layer"
-}];
-btnBrush.addEventListener("click", changeActiveBrush);
-btnBlur.addEventListener("click", changeActiveBlur);
-btnAddLayer.addEventListener("click", addLayer);
-btnSquare.addEventListener("click", changeActive);
-btnCircle.addEventListener("click", changeActive);
-btnHexagon.addEventListener("click", changeActive);
+
+function init() {
+  btnBrush.addEventListener("click", changeActiveBrush);
+  btnBlur.addEventListener("click", changeActiveBlur);
+  btnAddLayer.addEventListener("click", addLayer);
+  btnSquare.addEventListener("click", changeActiveFigure);
+  btnCircle.addEventListener("click", changeActiveFigure);
+  btnHexagon.addEventListener("click", changeActiveFigure);
+}
 
 function changeOffTools() {
   var allBtnFigure = document.querySelectorAll(".figures__btn");
@@ -356,7 +344,7 @@ function changeOffTools() {
   });
 }
 
-function changeActive(e) {
+function changeActiveFigure(e) {
   changeOffTools(e);
 
   if (e.target.dataset.flag === "off") {
@@ -387,16 +375,16 @@ function changeActiveBlur() {
   if (btnBlur.dataset.flag === "off") {
     btnBlur.dataset.flag = "on";
     btnBlur.classList.add("button-wrapper__btn--active");
-    paintOptions.filter = 'blur(3px)';
+    paintOptions.filter = 'blur(2px)';
   } else {
     btnBlur.dataset.flag = "off";
     btnBlur.classList.toggle("button-wrapper__btn--active");
-    paintOptions.filter = '';
+    paintOptions.filter = 'none';
   }
 }
 
 function addLayer() {
-  addCurrentLayerButton(countLayer, nameLayer);
+  addCurrentLayerButton(countLayer);
   radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
   btnDel = document.querySelectorAll(".current-button-delete-layer");
   var tabContentActiveElem = document.querySelector(".layers");
@@ -422,6 +410,7 @@ function deleteCurrentLayer(e) {
       el.remove();
     }
   });
+  countLayer--;
 }
 
 function getCurrentLayer(e) {
@@ -446,15 +435,15 @@ function addCurrentLayerButton(count) {
   curInputRadio.name = "radioLayer";
 
   if (count === 0) {
-    curInputRadio.checked = true;
-    curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = 'Canvas layer';
+    curInputRadio.checked = true; // curInputRadio.id = count;
+    // curLabelNameLayer.innerHTML = 'Canvas layer';
   } else {
     curInputRadio.checked = false;
-    curInputRadio.id = count;
-    curLabelNameLayer.innerHTML = 'Canvas layer';
   }
 
+  curInputRadio.id = count;
+  curLabelNameLayer.innerHTML = 'Canvas layer';
+  curLabelNameLayer.dataset.lang = 'Canvas layer';
   curLabel.innerHTML = count;
   curAddLayer.classList.add("layers__curLayer");
   curButtonDelLayer.classList.add("current-button-delete-layer");
@@ -471,51 +460,6 @@ var activeTab = {
   id: 1
 };
 var layer = new Layers();
-
-function initLayers() {
-  var tabContentsElem = document.querySelector("#tab-1");
-  tabContentsElem.addEventListener("click", function () {
-    var target = event.target;
-
-    if (target.closest('.add-layer')) {
-      var tabContentActiveElem = document.querySelector(".layers");
-      var layerElem = tabContentActiveElem.querySelector(".layers");
-      var newCanvas = layer.add(tabContentActiveElem, layerElem);
-      return;
-    }
-
-    if (target.closest('.layer__delete')) {
-      layer.delete(target.closest('.layer__delete').parentElement, tabContentsElem);
-      return;
-    }
-
-    if (target.closest('.layer') && !target.closest('.layer__delete')) {
-      var _tabContentActiveElem = document.querySelector(".tabcontent.active");
-
-      var allLayers = _tabContentActiveElem.querySelectorAll(".layer");
-
-      var arrayOfCanvas = _tabContentActiveElem.querySelectorAll(".canvas");
-
-      var activeTabId = _tabContentActiveElem.id;
-      var activeLayerId = target.closest('.layer').dataset.id;
-      var canvasId = "canvas-" + activeTabId + "__layer-" + activeLayerId;
-      var activeCanvas = document.getElementById(canvasId);
-
-      for (var i = 0; i < arrayOfCanvas.length; i++) {
-        arrayOfCanvas[i].classList.remove("active");
-      }
-
-      activeCanvas.classList.add("active");
-
-      for (var _i = 0; _i < allLayers.length; _i++) {
-        allLayers[_i].classList.remove("active");
-      }
-
-      target.closest('.layer').classList.add("active");
-      return;
-    }
-  });
-}
 
 function Layers() {
   this.add = function (layerElem, id) {
@@ -556,15 +500,6 @@ function Layers() {
     elem.classList.add("active");
   };
 
-  this.delete = function (layerElem, tabContentsElem) {
-    var activeTabContent = tabContentsElem.querySelector(".tabcontent.active");
-    var layerBlock = document.querySelector(".layers-block__layers");
-    deleteCanvas(layerElem.dataset.id, activeTabContent);
-    layerElem.remove();
-    if (!layerBlock.lastChild) return;
-    layerBlock.lastChild.classList.add("active");
-  };
-
   function createCanvas(id, count) {
     var canvas = document.createElement("canvas");
     canvas.classList.add("canvas");
@@ -574,15 +509,9 @@ function Layers() {
     canvas.width = 800;
     canvas.height = 500;
     return canvas;
-  } /////////////////////////////////////////////////////////
-
-
-  function deleteCanvas(id, activeTabContent) {
-    var canvasId = "canvas-" + activeTab.id + "__layer-" + 1;
-    document.getElementById(canvasId).remove();
-    activeTabContent.lastChild.classList.add("active");
   }
 }
+"use strict";
 
 function initPaint() {
   addEventListeners();
@@ -593,15 +522,9 @@ function addEventListeners() {
   var canvasCoordXElem = document.getElementById("canvasCoordX");
   var canvasCoordYElem = document.getElementById("canvasCoordY");
   var rngElem = document.getElementById('size');
-  var colorElem = document.getElementById("btnColor"); // function getActiveCanvas() {
-  //   return tabContentsElem.querySelector(".tabcontent.active canvas.active");
-  // }
-  // function getActiveTab() {
-  //   return tabContentsElem.querySelector(".tabcontent.active");
-  // }
-
+  var colorElem = document.getElementById("btnColor");
   tabContentsElem.addEventListener('mousemove', function (event) {
-    if (event.target.tagName !== "CANVAS") return;
+    if (event.target.tagName !== "canvas") return;
     canvasCoordXElem.innerHTML = event.offsetX;
     canvasCoordYElem.innerHTML = event.offsetY;
   });
@@ -615,21 +538,6 @@ function addEventListeners() {
     paintOptions.setMode("brush");
   });
 }
-
-function getLayers(array) {
-  var arrayOfLayers = [];
-
-  for (var i = 0; i < array.length; i++) {
-    var _layer = {
-      id: array[i].dataset.id,
-      image: array[i].toDataURL()
-    };
-    arrayOfLayers.push(_layer);
-  }
-
-  return arrayOfLayers;
-}
-"use strict";
 
 var paintOptions = new PaintOptions();
 
@@ -743,14 +651,14 @@ function getFigure(ctx, size, figure, x, y) {
   switch (figure) {
     case "circle":
       ctx.beginPath();
-      ctx.arc(x + size / 2, y + size / 2, size / 2, 0, 13 * Math.PI / 2); // ctx.filter = filter;
-
+      ctx.lineWidth = paintOptions.size / 3;
+      ctx.arc(x + size / 2, y + size / 2, size / 2, 0, 13 * Math.PI / 2);
       ctx.stroke();
+      ctx.lineWidth = 1;
       break;
 
     case "square":
-      ctx.beginPath(); // ctx.filter = filter;
-
+      ctx.beginPath();
       ctx.strokeRect(x, y, size, size);
       break;
 
@@ -762,8 +670,7 @@ function getFigure(ctx, size, figure, x, y) {
       ctx.lineTo(x + size / 4 + size / 2, y + side + size / 2);
       ctx.lineTo(x + size, y + size / 2);
       ctx.lineTo(x + size / 4 + size / 2, y - side + size / 2);
-      ctx.lineTo(x + size / 4, y - side + size / 2); // ctx.filter = filter;
-
+      ctx.lineTo(x + size / 4, y - side + size / 2);
       ctx.stroke();
       break;
   }
@@ -784,9 +691,7 @@ var contentDropDownThemeElem = document.querySelector(".dropdown-content_theme")
 var contentDropDownLangElem = document.querySelector(".dropdown-content_lang");
 var btnDropDownElem = document.querySelector(".dropbtn-settings");
 var DropDownSetElem = document.querySelector(".dropdown-content-settings");
-var langObj = i18n.create({
-  values: {}
-});
+var langObj;
 DropDownSetElem.addEventListener("click", function (event) {
   var DropDownContentThemeElem = document.querySelector(".dropdown-content_theme");
   var target = event.target;
@@ -825,19 +730,19 @@ DropDownSetElem.addEventListener("click", function (event) {
           values: {
             "Settings": "Настройки",
             "Theme": "Тема",
-            "Lang": "Язык",
-            "add": "добавить",
+            "Language": "Язык",
             "Dark": "Темная",
             "Light": "Светлая",
-            "Eng": "Анг",
-            "Rus": "Рус",
+            "English": "Английский",
+            "Russian": "Русский",
             "Size:": "Размер:",
             "Paint on Canvas": "Рисунок на холсте)",
             "Brush": "Кисть",
             "Blur": "Размытие",
             "Layout panel": "Слои",
             "Add layer": "Добавить слой",
-            "Figures panel": "Фигуры"
+            "Figures panel": "Фигуры",
+            "Canvas layer": "Слой"
           }
         });
         changeLange();

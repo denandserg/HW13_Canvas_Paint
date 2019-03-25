@@ -3,10 +3,7 @@ const contentDropDownLangElem = document.querySelector(".dropdown-content_lang")
 const btnDropDownElem = document.querySelector(".dropbtn-settings");
 const DropDownSetElem = document.querySelector(".dropdown-content-settings");
 
-let langObj = i18n.create({
-  values:
-  {}
-});
+let langObj;
 
 DropDownSetElem.addEventListener("click", function(event) {
     const DropDownContentThemeElem = document.querySelector(".dropdown-content_theme");
@@ -42,19 +39,19 @@ DropDownSetElem.addEventListener("click", function(event) {
                   values:{
                     "Settings":"Настройки",
                     "Theme":"Тема",
-                    "Lang":"Язык",
-                    "add":"добавить",
+                    "Language":"Язык",
                     "Dark":"Темная",
                     "Light":"Светлая",
-                    "Eng":"Анг",
-                    "Rus":"Рус",
+                    "English":"Английский",
+                    "Russian":"Русский",
                     "Size:":"Размер:",
                     "Paint on Canvas":"Рисунок на холсте)",
                     "Brush":"Кисть",
                     "Blur":"Размытие",
                     "Layout panel":"Слои",
                     "Add layer":"Добавить слой",
-                    "Figures panel":"Фигуры"
+                    "Figures panel":"Фигуры",
+                    "Canvas layer":"Слой"
                 }
             });
                 changeLange();

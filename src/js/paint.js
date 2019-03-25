@@ -1,3 +1,34 @@
+function initPaint() {
+  addEventListeners();
+}
+
+function addEventListeners() {
+  const tabContentsElem = document.getElementById("tab-1");
+  let canvasCoordXElem = document.getElementById("canvasCoordX");
+  let canvasCoordYElem = document.getElementById("canvasCoordY");
+  let rngElem = document.getElementById('size');
+  let colorElem = document.getElementById("btnColor");
+
+  tabContentsElem.addEventListener('mousemove', function(event) {
+    if (event.target.tagName !== "canvas") return;
+    canvasCoordXElem.innerHTML = event.offsetX;
+    canvasCoordYElem.innerHTML = event.offsetY;
+  });
+
+  colorElem.addEventListener('input', function() {
+    paintOptions.setColor(colorElem.value);
+  });
+
+  rngElem.addEventListener('input', function() {
+    paintOptions.setSize(rngElem.value);
+  });
+
+  btnBrush.addEventListener('click', function() {
+    paintOptions.setMode("brush");
+  });
+}
+
+
 const paintOptions = new PaintOptions();
 
 function PaintOptions() {
@@ -51,8 +82,8 @@ function PaintOptions() {
     if (self.mode !== "figure") return;
     let cursor = document.createElement('canvas');
     let ctxCurs = cursor.getContext('2d');
-    cursor.width = self.size + 2;
-    cursor.height = self.size + 2;
+    cursor.width = self.size+2;
+    cursor.height = self.size+2;
     ctxCurs.strokeStyle = self.fillColor;
     getFigure(ctxCurs, self.size, self.figure, 1, 1);
     self.setCursor(cursor.toDataURL());
@@ -113,13 +144,13 @@ function getFigure(ctx, size, figure, x, y) {
   switch (figure) {
     case "circle":
       ctx.beginPath();
+      ctx.lineWidth = paintOptions.size/3;
       ctx.arc(x + size / 2, y + size / 2, size / 2, 0, 13 * Math.PI / 2);
-      // ctx.filter = filter;
       ctx.stroke();
+      ctx.lineWidth = 1;
       break;
     case "square":
       ctx.beginPath();
-      // ctx.filter = filter;
       ctx.strokeRect(x, y, size, size);
       break;
     case "hexagon":
@@ -131,7 +162,6 @@ function getFigure(ctx, size, figure, x, y) {
       ctx.lineTo(x + size, y  + size / 2);
       ctx.lineTo(x + size / 4 + size / 2, y - side  + size / 2);
       ctx.lineTo(x + size / 4, y - side  + size / 2);
-      // ctx.filter = filter;
       ctx.stroke();
       break;
   }
