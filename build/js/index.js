@@ -309,223 +309,38 @@ SOFTWARE.
 "use strict";
 
 window.onload = function () {
-  init();
+  initViewController();
   initPaint();
 };
-
-var btnBrush = document.getElementById("btnBrush");
-var btnBlur = document.getElementById("btnBlur");
-var btnAddLayer = document.getElementById("btnLayerAdd");
-var btnSquare = document.getElementById("btnSquare");
-var btnHexagon = document.getElementById("btnHexagon");
-var btnCircle = document.getElementById("btnCircle");
-var divLayers = document.getElementById("layers");
-var size = document.getElementById('size');
-var btnDel;
-var radios;
-var countLayer = 0;
-
-function init() {
-  btnBrush.addEventListener("click", changeActiveBrush);
-  btnBlur.addEventListener("click", changeActiveBlur);
-  btnAddLayer.addEventListener("click", addLayer);
-  btnSquare.addEventListener("click", changeActiveFigure);
-  btnCircle.addEventListener("click", changeActiveFigure);
-  btnHexagon.addEventListener("click", changeActiveFigure);
-}
-
-function changeOffTools() {
-  var allBtnFigure = document.querySelectorAll(".figures__btn");
-  allBtnFigure.forEach(function (btn) {
-    btn.dataset.flag = "off";
-    btn.classList.remove("button-wrapper__btn--active");
-    btnBrush.dataset.flag = "off";
-    btnBrush.classList.remove("button-wrapper__btn--active");
-  });
-}
-
-function changeActiveFigure(e) {
-  changeOffTools(e);
-
-  if (e.target.dataset.flag === "off") {
-    e.target.dataset.flag = "on";
-    e.target.classList.add("button-wrapper__btn--active");
-    paintOptions.setMode("figure");
-    paintOptions.getCursor(e.target.dataset.id);
-  } else {
-    e.target.dataset.flag = "off";
-    e.target.classList.remove("button-wrapper__btn--active");
-  }
-}
-
-function changeActiveBrush(e) {
-  changeOffTools(e);
-
-  if (btnBrush.dataset.flag === "off") {
-    btnBrush.dataset.flag = "on";
-    btnBrush.classList.add("button-wrapper__btn--active");
-    paintOptions.figure = '';
-  } else {
-    btnBrush.dataset.flag = "off";
-    btnBrush.classList.toggle("button-wrapper__btn--active");
-  }
-}
-
-function changeActiveBlur() {
-  if (btnBlur.dataset.flag === "off") {
-    btnBlur.dataset.flag = "on";
-    btnBlur.classList.add("button-wrapper__btn--active");
-    paintOptions.filter = 'blur(2px)';
-  } else {
-    btnBlur.dataset.flag = "off";
-    btnBlur.classList.toggle("button-wrapper__btn--active");
-    paintOptions.filter = 'none';
-  }
-}
-
-function addLayer() {
-  addCurrentLayerButton(countLayer);
-  radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
-  btnDel = document.querySelectorAll(".current-button-delete-layer");
-  var tabContentActiveElem = document.querySelector(".layers");
-  var newCanvas = layer.add(tabContentActiveElem);
-  radios.forEach(function (el) {
-    el.addEventListener("click", getCurrentLayer);
-  });
-  btnDel.forEach(function (el) {
-    el.addEventListener("click", deleteCurrentLayer);
-  });
-}
-
-function deleteCurrentLayer(e) {
-  var allCanvas = document.querySelectorAll(".canvas");
-  var allLayers = document.querySelectorAll(".layers__curLayer");
-  allCanvas.forEach(function (el) {
-    if (e.target.value === el.dataset.id) {
-      el.remove();
-    }
-  });
-  allLayers.forEach(function (el) {
-    if (e.target.value === el.dataset.flag) {
-      el.remove();
-    }
-  });
-  countLayer--;
-}
-
-function getCurrentLayer(e) {
-  var allCanvas = document.querySelectorAll(".canvas");
-  allCanvas.forEach(function (el) {
-    el.classList.remove('active');
-
-    if (e.target.id === el.dataset.id) {
-      el.classList.add("active");
-    }
-  });
-}
-
-function addCurrentLayerButton(count) {
-  var curAddLayer = document.createElement("div");
-  var curLabel = document.createElement("label");
-  var curInputRadio = document.createElement("input");
-  var curLabelNameLayer = document.createElement("label");
-  var curButtonDelLayer = document.createElement("button");
-  curAddLayer.dataset.flag = count;
-  curInputRadio.type = "radio";
-  curInputRadio.name = "radioLayer";
-
-  if (count === 0) {
-    curInputRadio.checked = true; // curInputRadio.id = count;
-    // curLabelNameLayer.innerHTML = 'Canvas layer';
-  } else {
-    curInputRadio.checked = false;
-  }
-
-  curInputRadio.id = count;
-  curLabelNameLayer.innerHTML = 'Canvas layer';
-  curLabelNameLayer.dataset.lang = 'Canvas layer';
-  curLabel.innerHTML = count;
-  curAddLayer.classList.add("layers__curLayer");
-  curButtonDelLayer.classList.add("current-button-delete-layer");
-  curButtonDelLayer.value = count;
-  curAddLayer.appendChild(curLabel);
-  curAddLayer.appendChild(curInputRadio);
-  curAddLayer.appendChild(curLabelNameLayer);
-  curAddLayer.appendChild(curButtonDelLayer);
-  divLayers.appendChild(curAddLayer);
-}
-
-if (typeof module !== 'undefined') {
-  module.exports = {
-    btnBrush: btnBrush,
-    init: init
-  };
-}
 "use strict";
 
-var activeTab = {
-  id: 1
-};
 var layer = new Layers();
-var canvasPaint;
 
 function Layers() {
-  this.add = function (layerElem, id) {
-    var tab1 = document.getElementById('tab-1');
-    var allLayers = document.querySelectorAll(".layer");
-    var allCanvases = document.querySelectorAll(".canvas");
-    var count = this.getId(id, allLayers);
-    var canvas = createCanvas(activeTab.id, countLayer);
-    this.makeActive(canvas, allCanvases);
-    tab1.appendChild(canvas);
+  this.add = function () {
+    var canvasModule = document.getElementById('allCanvasModule');
+    var canvas = this.createCanvas();
+    canvasModule.appendChild(canvas);
     canvas.paintObj = new Paint(canvas, paintOptions);
-    canvasPaint = canvas.paintObj;
     countLayer++;
     return canvas;
   };
 
-  this.getId = function (id, allLayers) {
-    var count;
-
-    if (id === undefined) {
-      if (allLayers.length === 0) {
-        count = 1;
-      } else {
-        count = allLayers[allLayers.length - 1].dataset.id;
-        count++;
-      }
-    } else {
-      count = id;
-    }
-
-    return count;
-  };
-
-  this.makeActive = function (elem, collection) {
-    for (var i = 0; i < collection.length; i++) {
-      collection[i].classList.remove("active");
-    }
-
-    elem.classList.add("active");
-  };
-
-  function createCanvas(id, count) {
+  this.createCanvas = function () {
     var canvas = document.createElement("canvas");
     canvas.classList.add("canvas");
-    canvas.id = "canvas-" + id + "__layer-" + count;
-    canvas.dataset.id = count;
-    canvas.dataset.tabId = id;
+    canvas.id = "canvas__layer-" + countLayer;
+    canvas.dataset.id = countLayer;
     canvas.width = 800;
     canvas.height = 500;
     return canvas;
-  }
+  };
 }
 
 if (typeof module !== 'undefined') {
   module.exports = {
     Layers: Layers,
-    layer: layer,
-    canvasPaint: canvasPaint
+    layer: layer
   };
 }
 "use strict";
@@ -535,13 +350,13 @@ function initPaint() {
 }
 
 function addEventListeners() {
-  var tabContentsElem = document.getElementById("tab-1");
+  var canvasModule = document.getElementById("allCanvasModule");
   var btnBrush = document.getElementById("btnBrush");
   var canvasCoordXElem = document.getElementById("canvasCoordX");
   var canvasCoordYElem = document.getElementById("canvasCoordY");
   var rngElem = document.getElementById('size');
   var colorElem = document.getElementById("btnColor");
-  tabContentsElem.addEventListener('mousemove', function (event) {
+  canvasModule.addEventListener('mousemove', function (event) {
     if (event.target.tagName !== "canvas") return;
     canvasCoordXElem.innerHTML = event.offsetX;
     canvasCoordYElem.innerHTML = event.offsetY;
@@ -627,9 +442,6 @@ function Paint(canvas, options) {
     self.mouseMoveHandler(event);
     self.drawFigure(event);
   });
-  window.addEventListener('mouseup', function () {
-    canvas.onmousemove = null;
-  });
 
   this.clear = function (canvas) {
     var ctx = canvas.getContext('2d');
@@ -702,8 +514,7 @@ if (typeof module !== 'undefined') {
     Paint: Paint,
     PaintOptions: PaintOptions,
     getFigure: getFigure,
-    initPaint: initPaint,
-    addEventListeners: addEventListeners
+    initPaint: initPaint
   };
 }
 "use strict";
@@ -816,3 +627,151 @@ btnDropDownElem.addEventListener("click", function (event) {
   contentDropDownThemeElem.classList.remove("active");
   contentDropDownLangElem.classList.remove("active");
 });
+"use strict";
+
+var btnBrush = document.getElementById("btnBrush");
+var btnBlur = document.getElementById("btnBlur");
+var btnAddLayer = document.getElementById("btnLayerAdd");
+var btnSquare = document.getElementById("btnSquare");
+var btnHexagon = document.getElementById("btnHexagon");
+var btnCircle = document.getElementById("btnCircle");
+var divLayers = document.getElementById("layers");
+var btnDel;
+var radios;
+var countLayer = 0;
+
+function initViewController() {
+  var viewController = new ViewController();
+  btnBrush.addEventListener("click", viewController.changeActiveBrush);
+  btnBlur.addEventListener("click", viewController.changeActiveBlur);
+  btnAddLayer.addEventListener("click", viewController.addLayerCanvas);
+  btnSquare.addEventListener("click", viewController.changeActiveFigure);
+  btnCircle.addEventListener("click", viewController.changeActiveFigure);
+  btnHexagon.addEventListener("click", viewController.changeActiveFigure);
+}
+
+function ViewController() {
+  var that = this;
+
+  this.changeOffTools = function () {
+    var allBtnFigure = document.querySelectorAll(".figures__btn");
+    allBtnFigure.forEach(function (btn) {
+      btn.dataset.flag = "off";
+      btn.classList.remove("button-wrapper__btn--active");
+      btnBrush.dataset.flag = "off";
+      btnBrush.classList.remove("button-wrapper__btn--active");
+    });
+  };
+
+  this.changeActiveFigure = function (e) {
+    that.changeOffTools();
+
+    if (e.target.dataset.flag === "off") {
+      e.target.dataset.flag = "on";
+      e.target.classList.add("button-wrapper__btn--active");
+      paintOptions.setMode("figure");
+      paintOptions.getCursor(e.target.dataset.id);
+    } else {
+      e.target.dataset.flag = "off";
+      e.target.classList.remove("button-wrapper__btn--active");
+    }
+  };
+
+  this.changeActiveBrush = function (e) {
+    that.changeOffTools();
+
+    if (btnBrush.dataset.flag === "off") {
+      btnBrush.dataset.flag = "on";
+      btnBrush.classList.add("button-wrapper__btn--active");
+      paintOptions.figure = '';
+    } else {
+      btnBrush.dataset.flag = "off";
+      btnBrush.classList.toggle("button-wrapper__btn--active");
+    }
+  };
+
+  this.changeActiveBlur = function () {
+    if (btnBlur.dataset.flag === "off") {
+      btnBlur.dataset.flag = "on";
+      btnBlur.classList.add("button-wrapper__btn--active");
+      paintOptions.filter = 'blur(2px)';
+    } else {
+      btnBlur.dataset.flag = "off";
+      btnBlur.classList.toggle("button-wrapper__btn--active");
+      paintOptions.filter = 'none';
+    }
+  };
+
+  this.addLayerCanvas = function () {
+    that.addCurrentLayerCanvasButton();
+    radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
+    btnDel = document.querySelectorAll(".current-button-delete-layer");
+    var currentCanvas = layer.add();
+    radios.forEach(function (el) {
+      el.addEventListener("click", that.getCurrentLayerCanvas);
+    });
+    btnDel.forEach(function (el) {
+      el.addEventListener("click", that.deleteCurrentLayerCanvas);
+    });
+    return currentCanvas;
+  };
+
+  this.deleteCurrentLayerCanvas = function (e) {
+    var allCanvas = document.querySelectorAll(".canvas");
+    var allLayers = document.querySelectorAll(".layers__curLayer");
+    allCanvas.forEach(function (el) {
+      if (e.target.value === el.dataset.id) {
+        el.remove();
+      }
+    });
+    allLayers.forEach(function (el) {
+      if (e.target.value === el.dataset.flag) {
+        el.remove();
+      }
+    });
+    countLayer--;
+  };
+
+  this.getCurrentLayerCanvas = function (e) {
+    var allCanvas = document.querySelectorAll(".canvas");
+    allCanvas.forEach(function (el) {
+      el.classList.remove('active');
+
+      if (e.target.id === el.dataset.id) {
+        el.classList.add("active");
+      }
+    });
+  };
+
+  this.addCurrentLayerCanvasButton = function () {
+    var curAddLayer = document.createElement("div");
+    var curLabel = document.createElement("label");
+    var curInputRadio = document.createElement("input");
+    var curLabelNameLayer = document.createElement("label");
+    var curButtonDelLayer = document.createElement("button");
+    curAddLayer.dataset.flag = countLayer;
+    curInputRadio.type = "radio";
+    curInputRadio.name = "radioLayer";
+    curInputRadio.checked = false;
+    curInputRadio.id = countLayer;
+    curLabelNameLayer.innerHTML = 'Canvas layer';
+    curLabelNameLayer.setAttribute('for', countLayer);
+    curLabelNameLayer.dataset.lang = 'Canvas layer';
+    curLabel.innerHTML = countLayer;
+    curAddLayer.classList.add("layers__curLayer");
+    curButtonDelLayer.classList.add("current-button-delete-layer");
+    curButtonDelLayer.value = countLayer;
+    curAddLayer.appendChild(curLabel);
+    curAddLayer.appendChild(curInputRadio);
+    curAddLayer.appendChild(curLabelNameLayer);
+    curAddLayer.appendChild(curButtonDelLayer);
+    divLayers.appendChild(curAddLayer);
+  };
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    initViewController: initViewController,
+    ViewController: ViewController
+  };
+}

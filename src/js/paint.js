@@ -3,14 +3,14 @@ function initPaint() {
 }
 
 function addEventListeners() {
-  const tabContentsElem = document.getElementById("tab-1");
+  const canvasModule = document.getElementById("allCanvasModule");
   const btnBrush = document.getElementById("btnBrush");
   const canvasCoordXElem = document.getElementById("canvasCoordX");
   const canvasCoordYElem = document.getElementById("canvasCoordY");
   const rngElem = document.getElementById('size');
   const colorElem = document.getElementById("btnColor");
 
-  tabContentsElem.addEventListener('mousemove', function(event) {
+  canvasModule.addEventListener('mousemove', function(event) {
     if (event.target.tagName !== "canvas") return;
     canvasCoordXElem.innerHTML = event.offsetX;
     canvasCoordYElem.innerHTML = event.offsetY;
@@ -103,10 +103,6 @@ function Paint(canvas, options) {
     self.drawFigure(event);
   });
 
-  window.addEventListener('mouseup', function() {
-    canvas.onmousemove = null;
-  });
-
   this.clear = function(canvas) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -173,7 +169,6 @@ if (typeof module !== 'undefined') {
     Paint,
     PaintOptions,
     getFigure,
-    initPaint,
-    addEventListeners
+    initPaint
   };
 }

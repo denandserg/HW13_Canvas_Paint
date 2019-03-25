@@ -450,7 +450,7 @@ body {
   background-image: url('../img/btnHexagon.svg');
   background-size: cover;
 }
-.tabcontent {
+.canvas-module {
   border: 1px solid red;
   width: 800px;
   height: 500px;
