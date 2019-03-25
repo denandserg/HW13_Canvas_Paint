@@ -454,12 +454,20 @@ function addCurrentLayerButton(count) {
   curAddLayer.appendChild(curButtonDelLayer);
   divLayers.appendChild(curAddLayer);
 }
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    btnBrush: btnBrush,
+    init: init
+  };
+}
 "use strict";
 
 var activeTab = {
   id: 1
 };
 var layer = new Layers();
+var canvasPaint;
 
 function Layers() {
   this.add = function (layerElem, id) {
@@ -471,6 +479,7 @@ function Layers() {
     this.makeActive(canvas, allCanvases);
     tab1.appendChild(canvas);
     canvas.paintObj = new Paint(canvas, paintOptions);
+    canvasPaint = canvas.paintObj;
     countLayer++;
     return canvas;
   };
@@ -511,6 +520,14 @@ function Layers() {
     return canvas;
   }
 }
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    Layers: Layers,
+    layer: layer,
+    canvasPaint: canvasPaint
+  };
+}
 "use strict";
 
 function initPaint() {
@@ -519,6 +536,7 @@ function initPaint() {
 
 function addEventListeners() {
   var tabContentsElem = document.getElementById("tab-1");
+  var btnBrush = document.getElementById("btnBrush");
   var canvasCoordXElem = document.getElementById("canvasCoordX");
   var canvasCoordYElem = document.getElementById("canvasCoordY");
   var rngElem = document.getElementById('size');
@@ -633,6 +651,7 @@ function Paint(canvas, options) {
     if (canvas && canvas.getContext) {
       var ctx = canvas.getContext('2d');
       ctx.fillStyle = self.options.fillColor;
+      ctx.filter = paintOptions.filter;
 
       canvas.onmousemove = function (event) {
         ctx.fillRect(event.offsetX - self.options.size / 2, event.offsetY - self.options.size / 2, self.options.size, self.options.size);
@@ -682,7 +701,9 @@ if (typeof module !== 'undefined') {
   module.exports = {
     Paint: Paint,
     PaintOptions: PaintOptions,
-    getFigure: getFigure
+    getFigure: getFigure,
+    initPaint: initPaint,
+    addEventListeners: addEventListeners
   };
 }
 "use strict";

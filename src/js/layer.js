@@ -1,5 +1,6 @@
 const activeTab = {id:1};
 let layer = new Layers();
+let canvasPaint;
 
 function Layers() {
   this.add = function(layerElem, id) {
@@ -11,6 +12,7 @@ function Layers() {
     this.makeActive(canvas, allCanvases);
     tab1.appendChild(canvas);
     canvas.paintObj = new Paint(canvas, paintOptions);
+    canvasPaint = canvas.paintObj;
     countLayer++;
     return canvas;
   };
@@ -51,6 +53,12 @@ function Layers() {
   }
 }
 
-
+if (typeof module !== 'undefined') {
+  module.exports = {
+    Layers,
+    layer,
+    canvasPaint
+  };
+}
 
 

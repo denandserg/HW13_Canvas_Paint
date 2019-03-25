@@ -4,10 +4,11 @@ function initPaint() {
 
 function addEventListeners() {
   const tabContentsElem = document.getElementById("tab-1");
-  let canvasCoordXElem = document.getElementById("canvasCoordX");
-  let canvasCoordYElem = document.getElementById("canvasCoordY");
-  let rngElem = document.getElementById('size');
-  let colorElem = document.getElementById("btnColor");
+  const btnBrush = document.getElementById("btnBrush");
+  const canvasCoordXElem = document.getElementById("canvasCoordX");
+  const canvasCoordYElem = document.getElementById("canvasCoordY");
+  const rngElem = document.getElementById('size');
+  const colorElem = document.getElementById("btnColor");
 
   tabContentsElem.addEventListener('mousemove', function(event) {
     if (event.target.tagName !== "canvas") return;
@@ -27,7 +28,6 @@ function addEventListeners() {
     paintOptions.setMode("brush");
   });
 }
-
 
 const paintOptions = new PaintOptions();
 
@@ -126,7 +126,7 @@ function Paint(canvas, options) {
     if (canvas && canvas.getContext) {
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = self.options.fillColor;
-
+      ctx.filter = paintOptions.filter;
       canvas.onmousemove = function(event) {
         ctx.fillRect(event.offsetX - self.options.size / 2, event.offsetY - self.options.size / 2, self.options.size, self.options.size);
       };
@@ -172,6 +172,8 @@ if (typeof module !== 'undefined') {
   module.exports = {
     Paint,
     PaintOptions,
-    getFigure
+    getFigure,
+    initPaint,
+    addEventListeners
   };
 }

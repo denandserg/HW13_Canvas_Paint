@@ -143,3 +143,10 @@ function addCurrentLayerButton(count) {
   divLayers.appendChild(curAddLayer);
 }
 
+if (typeof module !== 'undefined') {
+  module.exports = {
+    btnBrush,
+    init
+  };
+}
+
