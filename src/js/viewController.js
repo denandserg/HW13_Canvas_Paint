@@ -33,7 +33,7 @@ function ViewController () {
     }
   };
 
-  this.changeActiveBrush = function (e) {
+  this.changeActiveBrush = function () {
     that.changeOffTools();
     if (btnBrush.dataset.flag === "off") {
       btnBrush.dataset.flag = "on";

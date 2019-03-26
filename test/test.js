@@ -21,6 +21,9 @@ global.btnSquare = document.getElementById("btnSquare");
 global.btnHexagon = document.getElementById("btnHexagon");
 global.btnCircle = document.getElementById("btnCircle");
 global.divLayers = document.getElementById("layers");
+global.layer = layer.layer;
+global.btnDel = document.getElementsByClassName('current-button-delete-layer')[0];
+
 
 function getSinonStubs() {
 	const ctx = {
@@ -200,6 +203,122 @@ describe('Constructor ViewController', () => {
       const actual = mockView.hasOwnProperty(value);
       assert.equal(actual, true);
     });
+  });
+});
+
+describe('Function ViewController.addCurrentLayerCanvasButton()', () => {
+  const view = new viewController.ViewController();
+  it('should add new currentLayerCanvas in DOM, and countLayer++', () => {
+    view.addCurrentLayerCanvasButton();
+    assert.strictEqual(countLayer, 1);
+  });
+});
+
+describe('Function ViewController.addLayerCanvas()', () => {
+  const view = new viewController.ViewController();
+  it('should add new Canvas in DOM', () => {
+    const mockCanvas = document.createElement("canvas");
+    mockCanvas.classList.add("canvas");
+    mockCanvas.id = "canvas__layer-" + countLayer;
+    mockCanvas.dataset.id = countLayer;
+    mockCanvas.width = 800;
+    mockCanvas.height = 500;
+    document.body.appendChild(mockCanvas);
+    const actual = view.addLayerCanvas();
+    assert.strictEqual(actual.toString(), mockCanvas.toString());
+  });
+});
+
+describe('Function ViewController.changeActiveBlur()', () => {
+  const view = new viewController.ViewController();
+  it('should expected when button Blur pressed', () => {
+    view.changeActiveBlur();
+    const flagPressBlur = paintOptions.filter;
+    assert.strictEqual(flagPressBlur, 'blur(2px)');
+  });
+  it('should expected when button Blur not-pressed', () => {
+    view.changeActiveBlur();
+    const flagPressBlur = paintOptions.filter;
+    assert.strictEqual(flagPressBlur, 'none');
+  });
+  it('should expected when button Blur pressed', () => {
+    view.changeActiveBlur();
+    const flagPressBlur = btnBlur.dataset.flag;
+    assert.strictEqual(flagPressBlur, 'on');
+  });
+  it('should expected when button Blur not-pressed', () => {
+    view.changeActiveBlur();
+    const flagPressBlur = btnBlur.dataset.flag;
+    assert.strictEqual(flagPressBlur, 'off');
+  });
+});
+
+describe('Function ViewController.changeActiveBrush()', () => {
+  const view = new viewController.ViewController();
+  it('should expected when button Brush pressed', () => {
+    view.changeActiveBrush();
+    const flagPressBrush = btnBrush.dataset.flag;
+    assert.strictEqual(flagPressBrush, 'on');
+  });
+  it('should expected when button Brush not-pressed', () => {
+    view.changeOffTools();
+    const flagPressBrush = btnBrush.dataset.flag;
+    assert.strictEqual(flagPressBrush, 'off');
+  });
+});
+
+describe('Function ViewController.deleteCurrentLayerCanvas()', ()=>{
+  it('should delete currentLayerCanvas, countLayer--', ()=>{
+    const view = new viewController.ViewController();
+    view.addCurrentLayerCanvasButton();
+    const mockDelBtn = document.getElementsByClassName('current-button-delete-layer')[0];
+    mockDelBtn.click();
+    assert.strictEqual(countLayer, 1);
+  });
+});
+
+describe('Function ViewController.getCurrentLayerCanvas()', ()=>{
+  it('should make active currentLayerCanvas', ()=>{
+    const view = new viewController.ViewController();
+    view.addCurrentLayerCanvasButton();
+    const radios = document.querySelectorAll('input[type=radio][name="radioLayer"]');
+    const activeCanvas = document.querySelectorAll('.canvas .active')[0];
+    radios[0].click();
+    console.log(activeCanvas);
+    assert.strictEqual(countLayer, 1);
+  });
+});
+
+describe('Function ViewController.changeActiveFigure()', ()=>{
+  it('should make active button figure: Hexagon', ()=>{
+    btnHexagon.click();
+    const flagBtnPressed = btnHexagon.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'on');
+  });
+  it('should make non-active button figure: Hexagon', ()=>{
+    btnSquare.click();
+    const flagBtnPressed = btnHexagon.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'off');
+  });
+  it('should make non-active button figure: Square', ()=>{
+    btnHexagon.click();
+    const flagBtnPressed = btnSquare.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'off');
+  });
+  it('should make active button figure: Square', ()=>{
+    btnSquare.click();
+    const flagBtnPressed = btnSquare.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'on');
+  });
+  it('should make non-active button figure: Round', ()=>{
+    btnHexagon.click();
+    const flagBtnPressed = btnCircle.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'off');
+  });
+  it('should make active button figure: Round', ()=>{
+    btnCircle.click();
+    const flagBtnPressed = btnCircle.dataset.flag;
+    assert.strictEqual(flagBtnPressed, 'on');
   });
 });
 
