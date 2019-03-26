@@ -312,6 +312,23 @@ window.onload = function () {
   initViewController();
   initPaint();
 };
+
+var btnBrush = document.getElementById("btnBrush");
+var btnBlur = document.getElementById("btnBlur");
+var btnAddLayer = document.getElementById("btnLayerAdd");
+var btnSquare = document.getElementById("btnSquare");
+var btnHexagon = document.getElementById("btnHexagon");
+var btnCircle = document.getElementById("btnCircle");
+var divLayers = document.getElementById("layers");
+var btnDel;
+var radios;
+var countLayer = 0;
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    countLayer: countLayer
+  };
+}
 "use strict";
 
 var layer = new Layers();
@@ -628,17 +645,6 @@ btnDropDownElem.addEventListener("click", function (event) {
   contentDropDownLangElem.classList.remove("active");
 });
 "use strict";
-
-var btnBrush = document.getElementById("btnBrush");
-var btnBlur = document.getElementById("btnBlur");
-var btnAddLayer = document.getElementById("btnLayerAdd");
-var btnSquare = document.getElementById("btnSquare");
-var btnHexagon = document.getElementById("btnHexagon");
-var btnCircle = document.getElementById("btnCircle");
-var divLayers = document.getElementById("layers");
-var btnDel;
-var radios;
-var countLayer = 0;
 
 function initViewController() {
   var viewController = new ViewController();

@@ -100,7 +100,13 @@ gulp.task('img', () => {
     return gulp.src(paths.src.img, { since: gulp.lastRun('img') }).pipe(gulp.dest(paths.build.img));
 });
 
-gulp.task('build', gulp.series('clean', 'copy', gulp.parallel('styles', 'img', 'scripts')));
+gulp.task('copyCSS', function (done) {
+  gulp.src('./src/css/*.css')
+    .pipe(gulp.dest('./build/css'));
+  done();
+});
+
+gulp.task('build', gulp.series('clean', 'copy', gulp.parallel('styles', 'img', 'scripts', 'copyCSS')));
 
 gulp.task('watch', () => {
     gulp.watch(paths.compileWatch.less, gulp.series('styles'));
